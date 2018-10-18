@@ -45,6 +45,7 @@ last_message_id = ''
 # Table creation and initialization
 lunch_output_table = Texttable()
 dinner_output_table = Texttable()
+
 # Extra spaces to allow for large names to not be on multiple lines
 dinner_output_table.add_row([['        Dinner         ']])
 lunch_output_table.add_row([['         Lunch         ']])
@@ -52,14 +53,15 @@ lunch_output_table.set_cols_align("c")
 dinner_output_table.set_cols_align("c")
 
 # Used to make sure fake names or nicknames are not put onto the lists. Keeps things consistent for chef.
-unadjusted_member_list = open("/home/pi/LatePlateBot/Member_List.txt").read().splitlines()
-member_list = [entry.replace(" ","").lower() for entry in unadjusted_member_list]
+unadjusted_member_list = open("/home/pi/Git/LatePlateBot/Python-GroupMe-Bot/Member_List.txt").read().splitlines()
+member_list = [entry.replace(" ","").lower() for entry in unadjusted_member_list[1:]]
+
 
 # List subdivision to avoid extremely long lists sent to chat
-PC18_names = unadjusted_member_list[:18]
-PC17_names = unadjusted_member_list[18:40]
-PC16_names = unadjusted_member_list[40:61]
-PC15_names = unadjusted_member_list[61:84]
+PC15_names = unadjusted_member_list[1:24]
+PC16_names = unadjusted_member_list[25:46]
+PC17_names = unadjusted_member_list[47:69]
+PC18_names = unadjusted_member_list[70:]
 
 # Adjustable times for cutoffs, depending on meal type and chef requests
 lunch_cutoff_time = datetime.datetime.now().replace(hour =23, minute = 39, second = 30, microsecond = 0)
@@ -90,10 +92,11 @@ def time_comparator (now, lunch_cutoff_time, dinner_cutoff_time,lastMessage):
 def string_parser(user_input):
 	input_filtered = user_input.replace(" ","").lower()
 	if "!botlunch" in input_filtered:
+                # Removing bot meal call to only retain users name
 		potential_name = input_filtered[len("!botlunch"):]
 		if potential_name in member_list:
 			match_index = [i for i, s in enumerate(member_list) if potential_name in s]
-			member_name = unadjusted_member_list[match_index[0]]
+			member_name = unadjusted_member_list[match_index[0]+1]
 			if member_name not in lunch_list:
 				lunch_list.append(member_name)
 				lunch_output_table.add_row([[str(member_name)]])
@@ -105,11 +108,13 @@ def string_parser(user_input):
 				message_send("You're already on the lunch list " + member_name +"!")
 		else:
 			message_send('Name not recognized, use !names if you forgot your assigned name!')
+			
 	elif "!botdinner" in input_filtered:
+                # Again, removing bot meal call to retain users name
 		potential_name = input_filtered[len("!botdinner"):]
 		if potential_name in member_list:
 			match_index = [i for i, s in enumerate(member_list) if potential_name in s]
-			member_name = unadjusted_member_list[match_index[0]]
+			member_name = unadjusted_member_list[match_index[0]+1]
 			if member_name not in dinner_list:
 				dinner_list.append(member_name)
 				dinner_output_table.add_row([[str(member_name)]])
@@ -124,7 +129,7 @@ def string_parser(user_input):
 	else:
 		message_send("That's not a command, use !help if you don't remember the commands!")
 
-#Function sorts which grouping of names to send to avoid clutter in main code body
+# Function sorts which grouping of names to send to avoid clutter in main code body
 def name_selection(user_input):
 	if "pc18" in user_input.lower():
 		message_send(str(PC18_names))
@@ -154,20 +159,23 @@ while True:
 			print("Bad response Code: " + last_response_code)
 	except TypeError:
 		continue
-
+	
 	if initialize == 0:
-		print('initialize')
+		#print('initialize')
 		initialize += 1
 	else:
 		try:
 			message = response_messages[0]
 			latestId = message['id']
+			# Ignoring all messages sent by Bot
 			if message['name'] == 'ThotBot':
 				continue
+			
+			# Only new messages are filtered through
 			if latestId != last_message_id:
 				last_message_id = latestId
 				lastMessage = message['text']
-				if lastMessage == '!help':
+				if '!help' in lastMessage.lower():
 					message_send(help_message)
 				elif "!names" in lastMessage.lower():
 					name_selection(lastMessage)
