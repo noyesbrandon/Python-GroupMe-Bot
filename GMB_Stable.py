@@ -16,14 +16,6 @@ botCall = '!bot'
 helpCall = '!help'
 nameCall = '!names'
 
-# Opens the token file, allowing for outgoing messages
-with open("/home/pi/LatePlateBot/Token.txt","r") as file: bot_token = file.read()
-request_params = {'token': bot_token}
-
-# Lambda function for resetting terminal window
-clear = lambda : os.system('reset')
-clear()
-
 help_message = """
 	Hey! To get my attention use this format!
 
@@ -36,6 +28,14 @@ help_message = """
 	As an example
 	"""
 
+# Opens the token file, allowing for outgoing messages
+with open("/home/pi/LatePlateBot/Token.txt","r") as file: bot_token = file.read()
+request_params = {'token': bot_token}
+
+# Lambda function for resetting terminal window
+clear = lambda : os.system('reset')
+clear()
+
 # These lists hold names of those who want leftovers saved for each meal. Set to be wiped after the reset time: reset_time.
 lunch_list = []
 dinner_list = []
@@ -45,6 +45,7 @@ last_message_id = ''
 # Table creation and initialization
 lunch_output_table = Texttable()
 dinner_output_table = Texttable()
+# Extra spaces to allow for large names to not be on multiple lines
 dinner_output_table.add_row([['        Dinner         ']])
 lunch_output_table.add_row([['         Lunch         ']])
 lunch_output_table.set_cols_align("c")
@@ -87,15 +88,14 @@ def time_comparator (now, lunch_cutoff_time, dinner_cutoff_time,lastMessage):
 
 # Message creation and list appending, as well as table clearing and redrawing
 def string_parser(user_input):
-	text = user_input.replace(" ","").lower()
-	if "!botlunch" in text:
-		text = text[9:]
-		if text in member_list:
-			match_index = [i for i, s in enumerate(member_list) if text in s]
+	input_filtered = user_input.replace(" ","").lower()
+	if "!botlunch" in input_filtered:
+		potential_name = input_filtered[len("!botlunch"):]
+		if potential_name in member_list:
+			match_index = [i for i, s in enumerate(member_list) if potential_name in s]
 			member_name = unadjusted_member_list[match_index[0]]
 			if member_name not in lunch_list:
 				lunch_list.append(member_name)
-				#(str('Current lunch list')
 				lunch_output_table.add_row([[str(member_name)]])
 				clear()
 				print(lunch_output_table.draw())
@@ -105,14 +105,13 @@ def string_parser(user_input):
 				message_send("You're already on the lunch list " + member_name +"!")
 		else:
 			message_send('Name not recognized, use !names if you forgot your assigned name!')
-	elif "!botdinner" in text:
-		text = text[10:]
-		if text in member_list:
-			match_index = [i for i, s in enumerate(member_list) if text in s]
+	elif "!botdinner" in input_filtered:
+		potential_name = input_filtered[len("!botdinner"):]
+		if potential_name in member_list:
+			match_index = [i for i, s in enumerate(member_list) if potential_name in s]
 			member_name = unadjusted_member_list[match_index[0]]
 			if member_name not in dinner_list:
 				dinner_list.append(member_name)
-				#print(str('Current dinner list ' + str(dinner_list)))
 				dinner_output_table.add_row([[str(member_name)]])
 				clear()
 				print(lunch_output_table.draw())
