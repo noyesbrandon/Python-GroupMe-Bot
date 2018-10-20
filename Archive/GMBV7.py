@@ -15,7 +15,7 @@ botCall = '!bot'
 helpCall = '!help'
 nameCall = '!names'
 clear = lambda: os.system('cls')
-with open("C:/Users/JakeDesktop/Desktop/Token.txt","r") as file: bot_token = file.read()
+with open("C:/Users/JakeLaptop/Desktop/Token.txt","r") as file: bot_token = file.read()
 request_params = {'token': bot_token}
 
 help_message = """
@@ -45,7 +45,7 @@ lunch_output_table.set_cols_align("c")
 dinner_output_table.set_cols_align("c")
 
 #Used to make sure fake names or nicknames are not put onto the lists. Keeps things consistent for chef.
-unadjusted_member_list = open("C:/Users/JakeDesktop/Desktop/Member_List.txt").read().splitlines()
+unadjusted_member_list = open("C:/Users/JakeLaptop/Desktop/Member_List.txt").read().splitlines()
 member_list = [entry.replace(" ","").lower() for entry in unadjusted_member_list]
 
 #List subdivision to avoid extremely long lists sent to chat
@@ -55,7 +55,7 @@ PC16_names = unadjusted_member_list[40:61]
 PC15_names = unadjusted_member_list[61:84]
 
 #Adjustable times for cutoffs, depending on meal type and chef requests
-lunch_cutoff_time = datetime.datetime.now().replace(hour =13, minute = 39, second = 30, microsecond = 0)
+lunch_cutoff_time = datetime.datetime.now().replace(hour =23, minute = 39, second = 30, microsecond = 0)
 dinner_cutoff_time = datetime.datetime.now().replace(hour = 23, minute = 40, second = 0, microsecond = 0)	
 reset_time = datetime.datetime.now().replace(hour = 23, minute = 47, second = 00, microsecond = 0)
 
@@ -71,7 +71,7 @@ def time_comparator (now, lunch_cutoff_time, dinner_cutoff_time,lastMessage):
 		#add to lunch list
 	elif (now > lunch_cutoff_time) & (now < dinner_cutoff_time):
 		if "!botlunch" in lastMessage.replace(" ","").lower():
-			message_send("You're to late for lunch plates! Check the fridge for leftovers and try again tomorrow!")
+			message_send("You're too late for lunch plates! Check the fridge for leftovers and try again tomorrow!")
 		else:
 			string_parser(lastMessage)
 
