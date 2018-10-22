@@ -143,7 +143,8 @@ def string_parser(user_input):
                 print(dinner_output_table.draw())
                 message_send('Gotcha ' + member_name + ' you are on the lunch list!')
             else:
-                message_send("You're already on the lunch list " + member_name +"!")
+                lunch_list.remove(member_name)
+                message_send("You've been removed from the lunch list " + member_name +"!")
         else:
             message_send('Name not recognized, use !names if you forgot your assigned name!')
     elif "!botdinner" in input_filtered:
@@ -160,7 +161,8 @@ def string_parser(user_input):
                 print(dinner_output_table.draw())
                 message_send('Gotcha ' + member_name + ' you are on the dinner list!')
             else:
-                message_send("You're already on the dinner list " + member_name +"!")
+                dinner_list.remove(member_name)
+                message_send("You've been removed from the dinner list " + member_name +"!")
         else:
             message_send('Name not recognized, use !names if you forgot your assigned name!')
     else:
