@@ -72,9 +72,9 @@ PC17_names = unadjusted_member_list[47:69]
 PC18_names = unadjusted_member_list[70:]
 
 # Adjustable times for cutoffs, depending on meal type and chef requests
-lunch_cutoff_time = datetime.datetime.now().replace(hour=23, minute=39, second=30)
-dinner_cutoff_time = datetime.datetime.now().replace(hour=23, minute=40, second=0)
-reset_time = datetime.datetime.now().replace(hour=23, minute=47, second=0)
+lunch_cutoff_time = datetime.datetime.now().replace(hour=23, minute=59, second=30)
+dinner_cutoff_time = datetime.datetime.now().replace(hour=23, minute=59, second=0)
+reset_time = datetime.datetime.now().replace(hour=23, minute=59, second=0)
 
 # Method called to push message to GroupMe chat
 def message_send(to_send):
@@ -143,8 +143,7 @@ def string_parser(user_input):
                 print(dinner_output_table.draw())
                 message_send('Gotcha ' + member_name + ' you are on the lunch list!')
             else:
-                lunch_list.remove(member_name)
-                message_send("You've been removed from the lunch list " + member_name +"!")
+                message_send("You're already on the lunch list " + member_name +"!")
         else:
             message_send('Name not recognized, use !names if you forgot your assigned name!')
     elif "!botdinner" in input_filtered:
@@ -161,8 +160,7 @@ def string_parser(user_input):
                 print(dinner_output_table.draw())
                 message_send('Gotcha ' + member_name + ' you are on the dinner list!')
             else:
-                dinner_list.remove(member_name)
-                message_send("You've been removed from the dinner list " + member_name +"!")
+                message_send("You're already on the dinner list " + member_name +"!")
         else:
             message_send('Name not recognized, use !names if you forgot your assigned name!')
     else:
