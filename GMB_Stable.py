@@ -83,7 +83,14 @@ def message_send(to_send):
     """
 
     if last_response_code == 200:
-        requests.post(bot_link, params={'bot_id':bot_id, 'text':to_send})
+        not_complete = True
+        while not_complete:
+            try:
+                requests.post(bot_link, params={'bot_id':bot_id, 'text':to_send})
+                not_complete = False
+            except Exception as e:
+                print(e)
+                time.sleep(1)
 
 # Sorts message to various conditions depending on time relative to cutoffs
 def time_comparator(current_time, lunch_cutoff, dinner_cutoff, last_message):
@@ -199,7 +206,8 @@ while True:
             assert last_response_code == 200
         except AssertionError:
             print("Bad response Code: " + last_response_code)
-    except TypeError:
+    except Exception as e:
+        print(e)
         continue
     if initialize == 0:
         #print('initialize')
